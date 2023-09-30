@@ -28,6 +28,30 @@ document.addEventListener('DOMContentLoaded', () => {
       updateTodoCounts();
     }
 
+    function onTouchStart(event) {
+        draggedItem = event.target;
+        event.target.addEventListener('touchmove', onTouchMove, { passive: false });
+        event.target.addEventListener('touchend', onTouchEnd);
+    }
+
+    function onTouchMove(event) {
+        const touch = event.touches[0];
+        draggedItem.style.left = touch.clientX + 'px';
+        draggedItem.style.top = touch.clientY + 'px';
+    }
+
+    function onTouchEnd() {
+        draggedItem.style.left = '';
+        draggedItem.style.top = '';
+        draggedItem.removeEventListener('touchmove', onTouchMove);
+        draggedItem.removeEventListener('touchend', onTouchEnd);
+    }
+
+    todoList.addEventListener('touchstart', onTouchStart);
+    inProgressList.addEventListener('touchstart', onTouchStart);
+    closedList.addEventListener('touchstart', onTouchStart);
+
+    
     function openModal() {
         modal.style.display = 'block';
     }
