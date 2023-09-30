@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const todoList = document.getElementById('todo-list');
     const inProgressList = document.getElementById('in-progress-list');
     const closedList = document.getElementById('closed-list');
+      const todoCountElement = document.getElementById('todo-count');
+    const inProgressCountElement = document.getElementById('in-progress-count');
+    const closedCountElement = document.getElementById('closed-count');
     const addTodoButton = document.getElementById('add-todo');
     const modal = document.getElementById('myModal');
     const addTodoBtn = document.getElementById('addTodoBtn');
@@ -22,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         const list = document.getElementById(`${section}-list`);
         list.appendChild(draggedItem);
+      updateTodoCounts();
     }
 
     function openModal() {
@@ -42,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
             todoItem.addEventListener('dragstart', drag);
             todoList.appendChild(todoItem);
         }
+      updateTodoCounts();
         closeModalFunc();
         todoInput.value = '';
     }
@@ -50,6 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.target.className === 'todo-item') {
             event.target.remove();
         }
+      updateTodoCounts();
     }
 
     addTodoButton.addEventListener('click', openModal);
@@ -67,5 +73,12 @@ document.addEventListener('DOMContentLoaded', () => {
     todoList.addEventListener('dragover', allowDrop);
     inProgressList.addEventListener('dragover', allowDrop);
     closedList.addEventListener('dragover', allowDrop);
-  
+  function updateTodoCounts() {
+        const todoCount = todoList.children.length;
+        const inProgressCount = inProgressList.children.length;
+        const closedCount = closedList.children.length;
+        todoCountElement.textContent = todoCount;
+        inProgressCountElement.textContent = inProgressCount;
+        closedCountElement.textContent = closedCount;
+    }
 });
