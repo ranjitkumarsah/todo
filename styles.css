@@ -123,5 +123,13 @@ h2 {
     text-decoration: none;
     cursor: pointer;
 }
-
+#todo-count, #in-progress-count, #closed-count {
+    font-size:14px;
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: #4caf50;
+    color: white;
+    border-radius: 50px; 
+    margin-left: 10px;
+}
 
