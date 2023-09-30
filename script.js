@@ -17,31 +17,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let draggedItem;
 
-    function drag(event) {
-        draggedItem = event.target;
-    }
+    
 
-    function drop(event, section) {
-        event.preventDefault();
-        const list = document.getElementById(`${section}-list`);
-        list.appendChild(draggedItem);
-      updateTodoCounts();
-    }
-
-        let startX, startY;
+        let draggedItem = null;
 
     function onTouchStart(event) {
-        draggedItem = event.target;
         const touch = event.touches[0];
-        startX = touch.clientX - draggedItem.getBoundingClientRect().left;
-        startY = touch.clientY - draggedItem.getBoundingClientRect().top;
+        const offsetX = touch.clientX - draggedItem.getBoundingClientRect().left;
+        const offsetY = touch.clientY - draggedItem.getBoundingClientRect().top;
+        draggedItem.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
     }
 
     function onTouchMove(event) {
         event.preventDefault();
         const touch = event.touches[0];
-        const offsetX = touch.clientX - startX;
-        const offsetY = touch.clientY - startY;
+        const offsetX = touch.clientX - draggedItem.getBoundingClientRect().left;
+        const offsetY = touch.clientY - draggedItem.getBoundingClientRect().top;
         draggedItem.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
     }
 
@@ -49,17 +40,38 @@ document.addEventListener('DOMContentLoaded', () => {
         draggedItem.style.transform = '';
     }
 
-    todoList.addEventListener('touchstart', onTouchStart);
-    inProgressList.addEventListener('touchstart', onTouchStart);
-    closedList.addEventListener('touchstart', onTouchStart);
+    todoList.addEventListener('dragstart', drag);
+    inProgressList.addEventListener('dragstart', drag);
+    closedList.addEventListener('dragstart', drag);
 
-    todoList.addEventListener('touchmove', onTouchMove);
-    inProgressList.addEventListener('touchmove', onTouchMove);
-    closedList.addEventListener('touchmove', onTouchMove);
+    todoList.addEventListener('touchstart', (event) => {
+        draggedItem = event.target;
+        onTouchStart(event);
+        todoList.addEventListener('touchmove', onTouchMove);
+        todoList.addEventListener('touchend', onTouchEnd);
+    });
 
-    todoList.addEventListener('touchend', onTouchEnd);
-    inProgressList.addEventListener('touchend', onTouchEnd);
-    closedList.addEventListener('touchend', onTouchEnd);
+    inProgressList.addEventListener('touchstart', (event) => {
+        draggedItem = event.target;
+        onTouchStart(event);
+        inProgressList.addEventListener('touchmove', onTouchMove);
+        inProgressList.addEventListener('touchend', onTouchEnd);
+    });
+
+    closedList.addEventListener('touchstart', (event) => {
+        draggedItem = event.target;
+        onTouchStart(event);
+        closedList.addEventListener('touchmove', onTouchMove);
+        closedList.addEventListener('touchend', onTouchEnd);
+    });
+
+    todoList.addEventListener('drop', (event) => drop(event, 'todo'));
+    inProgressList.addEventListener('drop', (event) => drop(event, 'in-progress'));
+    closedList.addEventListener('drop', (event) => drop(event, 'closed'));
+
+    todoList.addEventListener('dragover', allowDrop);
+    inProgressList.addEventListener('dragover', allowDrop);
+    closedList.addEventListener('dragover', allowDrop);
 
     
     function openModal() {
@@ -116,3 +128,13 @@ document.addEventListener('DOMContentLoaded', () => {
         closedCountElement.textContent = closedCount;
     }
 });
+function drag(event) {
+        draggedItem = event.target;
+    }
+
+    function drop(event, section) {
+        event.preventDefault();
+        const list = document.getElementById(`${section}-list`);
+        list.appendChild(draggedItem);
+      updateTodoCounts();
+    }
