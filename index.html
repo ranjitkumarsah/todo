@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Todo App</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="todo-container">
+            <h2>Todo</h2>
+            <div id="todo-list" class="list" ondrop="drop(event, 'todo')" ondragover="allowDrop(event)"></div>
+            <button id="add-todo">Add Todo</button>
+        </div>
+        <div class="in-progress-container">
+            <h2>In Progress</h2>
+            <div id="in-progress-list" class="list" ondrop="drop(event, 'in-progress')" ondragover="allowDrop(event)"></div>
+        </div>
+        <div class="closed-container">
+            <h2>Closed</h2>
+            <div id="closed-list" class="list" ondrop="drop(event, 'closed')" ondragover="allowDrop(event)"></div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <input type="text" id="todoInput" placeholder="Enter your todo...">
+            <button id="addTodoBtn">Add Todo</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
