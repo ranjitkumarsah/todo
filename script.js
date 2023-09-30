@@ -30,17 +30,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function onTouchStart(event) {
         draggedItem = event.target;
+        event.preventDefault();
         event.target.addEventListener('touchmove', onTouchMove, { passive: false });
         event.target.addEventListener('touchend', onTouchEnd);
     }
 
     function onTouchMove(event) {
+        event.preventDefault();
         const touch = event.touches[0];
         draggedItem.style.left = touch.clientX + 'px';
         draggedItem.style.top = touch.clientY + 'px';
     }
 
     function onTouchEnd() {
+        event.preventDefault();
         draggedItem.style.left = '';
         draggedItem.style.top = '';
         draggedItem.removeEventListener('touchmove', onTouchMove);
