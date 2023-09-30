@@ -159,11 +159,11 @@ h2 {
     }
     
     .modal-content {
-        width: 90%;
+        width: 80%;
     }
 
     #todoInput {
-        width: 100%;
+        width: 90%;
     }
 
     #addTodoBtn {
