@@ -15,24 +15,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const todoInput = document.getElementById('todoInput');
     const closeModal = document.getElementsByClassName('close')[0];
 
-    let draggedItem;
-
-    
-
-        let draggedItem = null;
+   let startX, startY;
 
     function onTouchStart(event) {
+        draggedItem = event.target;
         const touch = event.touches[0];
-        const offsetX = touch.clientX - draggedItem.getBoundingClientRect().left;
-        const offsetY = touch.clientY - draggedItem.getBoundingClientRect().top;
-        draggedItem.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+        startX = touch.clientX - draggedItem.getBoundingClientRect().left;
+        startY = touch.clientY - draggedItem.getBoundingClientRect().top;
     }
 
     function onTouchMove(event) {
         event.preventDefault();
         const touch = event.touches[0];
-        const offsetX = touch.clientX - draggedItem.getBoundingClientRect().left;
-        const offsetY = touch.clientY - draggedItem.getBoundingClientRect().top;
+        const offsetX = touch.clientX - startX;
+        const offsetY = touch.clientY - startY;
         draggedItem.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
     }
 
@@ -40,38 +36,17 @@ document.addEventListener('DOMContentLoaded', () => {
         draggedItem.style.transform = '';
     }
 
-    todoList.addEventListener('dragstart', drag);
-    inProgressList.addEventListener('dragstart', drag);
-    closedList.addEventListener('dragstart', drag);
+    todoList.addEventListener('touchstart', onTouchStart);
+    inProgressList.addEventListener('touchstart', onTouchStart);
+    closedList.addEventListener('touchstart', onTouchStart);
 
-    todoList.addEventListener('touchstart', (event) => {
-        draggedItem = event.target;
-        onTouchStart(event);
-        todoList.addEventListener('touchmove', onTouchMove);
-        todoList.addEventListener('touchend', onTouchEnd);
-    });
+    todoList.addEventListener('touchmove', onTouchMove);
+    inProgressList.addEventListener('touchmove', onTouchMove);
+    closedList.addEventListener('touchmove', onTouchMove);
 
-    inProgressList.addEventListener('touchstart', (event) => {
-        draggedItem = event.target;
-        onTouchStart(event);
-        inProgressList.addEventListener('touchmove', onTouchMove);
-        inProgressList.addEventListener('touchend', onTouchEnd);
-    });
-
-    closedList.addEventListener('touchstart', (event) => {
-        draggedItem = event.target;
-        onTouchStart(event);
-        closedList.addEventListener('touchmove', onTouchMove);
-        closedList.addEventListener('touchend', onTouchEnd);
-    });
-
-    todoList.addEventListener('drop', (event) => drop(event, 'todo'));
-    inProgressList.addEventListener('drop', (event) => drop(event, 'in-progress'));
-    closedList.addEventListener('drop', (event) => drop(event, 'closed'));
-
-    todoList.addEventListener('dragover', allowDrop);
-    inProgressList.addEventListener('dragover', allowDrop);
-    closedList.addEventListener('dragover', allowDrop);
+    todoList.addEventListener('touchend', onTouchEnd);
+    inProgressList.addEventListener('touchend', onTouchEnd);
+    closedList.addEventListener('touchend', onTouchEnd);
 
     
     function openModal() {
@@ -81,7 +56,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function closeModalFunc() {
         modal.style.display = 'none';
     }
+function drag(event) {
+        draggedItem = event.target;
+    }
 
+    function drop(event, section) {
+        event.preventDefault();
+        const list = document.getElementById(`${section}-list`);
+        list.appendChild(draggedItem);
+      updateTodoCounts();
+    }
     function createTodo() {
         const todoText = todoInput.value;
         if (todoText) {
@@ -128,13 +112,4 @@ document.addEventListener('DOMContentLoaded', () => {
         closedCountElement.textContent = closedCount;
     }
 });
-function drag(event) {
-        draggedItem = event.target;
-    }
 
-    function drop(event, section) {
-        event.preventDefault();
-        const list = document.getElementById(`${section}-list`);
-        list.appendChild(draggedItem);
-      updateTodoCounts();
-    }
